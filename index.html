@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InBody · Body Composition Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --bg:        #0a0c10;
+    --bg2:       #111318;
+    --bg3:       #181b22;
+    --border:    rgba(255,255,255,0.07);
+    --text:      #e8eaf0;
+    --muted:     #6b7280;
+    --teal:      #2dd4bf;
+    --amber:     #fbbf24;
+    --rose:      #fb7185;
+    --blue:      #60a5fa;
+    --violet:    #a78bfa;
+    --green:     #4ade80;
+    --card-r:    16px;
+    --font-head: 'DM Serif Display', serif;
+    --font-body: 'Instrument Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative; z-index: 10;
+    padding: 2.5rem 3rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-end; gap: 2rem;
+    background: linear-gradient(180deg, rgba(45,212,191,0.04) 0%, transparent 100%);
+  }
+  .logo-mark {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--teal), var(--violet));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-weight: 500; font-size: 0.75rem;
+    color: #000; flex-shrink: 0;
+    box-shadow: 0 0 32px rgba(45,212,191,0.25);
+  }
+  .header-text h1 {
+    font-family: var(--font-head);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .header-text h1 em { font-style: italic; color: var(--teal); }
+  .header-text p {
+    font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem;
+    font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .header-badge {
+    margin-left: auto;
+    background: rgba(45,212,191,0.08);
+    border: 1px solid rgba(45,212,191,0.2);
+    border-radius: 999px; padding: 0.3rem 0.9rem;
+    font-size: 0.7rem; font-family: var(--font-mono);
+    color: var(--teal); white-space: nowrap;
+  }
+
+  /* ── MAIN WRAPPER ── */
+  main { position: relative; z-index: 1; padding: 2.5rem 3rem; max-width: 1440px; margin: 0 auto; }
+
+  /* ── UPLOAD ZONE ── */
+  #upload-section {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 60vh;
+  }
+  .drop-zone {
+    width: 100%; max-width: 600px;
+    border: 1.5px dashed rgba(45,212,191,0.3);
+    border-radius: 24px;
+    padding: 4rem 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(45,212,191,0.02);
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(45,212,191,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .drop-zone.drag-over {
+    border-color: var(--teal);
+    background: rgba(45,212,191,0.06);
+  }
+  .drop-icon {
+    width: 64px; height: 64px; margin: 0 auto 1.5rem;
+    background: rgba(45,212,191,0.1); border: 1px solid rgba(45,212,191,0.2);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center;
+  }
+  .drop-icon svg { width: 28px; height: 28px; color: var(--teal); }
+  .drop-zone h2 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 0.6rem; }
+  .drop-zone p { color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
+  .drop-zone p strong { color: var(--text); }
+  .drop-cta {
+    margin-top: 1.8rem;
+    display: inline-block;
+    background: linear-gradient(135deg, var(--teal), var(--violet));
+    color: #000; font-weight: 600; font-size: 0.85rem;
+    padding: 0.7rem 1.8rem; border-radius: 999px;
+    cursor: pointer; border: none; font-family: var(--font-body);
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 24px rgba(45,212,191,0.2);
+  }
+  .drop-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+  #file-input { display: none; }
+
+  .privacy-note {
+    margin-top: 1.5rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono);
+  }
+  .privacy-note svg { color: var(--green); }
+
+  /* ── DASHBOARD ── */
+  #dashboard-section { display: none; }
+
+  .section-label {
+    font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.5rem;
+  }
+
+  /* STAT CARDS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--card-r); padding: 1.25rem 1.4rem;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .stat-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent, var(--teal));
+    border-radius: 2px 2px 0 0;
+  }
+  .stat-card:hover { border-color: rgba(255,255,255,0.15); }
+  .stat-label {
+    font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.6rem;
+  }
+  .stat-value {
+    font-family: var(--font-mono); font-size: 1.75rem; font-weight: 500;
+    line-height: 1; color: var(--text);
+  }
+  .stat-unit { font-size: 0.75rem; color: var(--muted); margin-left: 0.2rem; }
+  .stat-delta {
+    margin-top: 0.5rem; font-size: 0.72rem; font-family: var(--font-mono);
+    display: flex; align-items: center; gap: 0.25rem;
+  }
+  .stat-delta.up { color: var(--green); }
+  .stat-delta.down { color: var(--rose); }
+  .stat-delta.neutral { color: var(--muted); }
+
+  /* CHARTS GRID */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--card-r); padding: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .chart-card.wide { grid-column: 1 / -1; }
+  .chart-title {
+    font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 0.2rem;
+  }
+  .chart-sub {
+    font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.25rem;
+  }
+  .chart-wrap { position: relative; height: 220px; }
+  .chart-wrap.tall { height: 280px; }
+
+  /* COMPOSITION BAR */
+  .comp-bar-wrap { margin-top: 0.5rem; }
+  .comp-bar {
+    height: 14px; border-radius: 999px; overflow: hidden;
+    display: flex; margin-bottom: 0.8rem;
+    background: var(--bg3);
+  }
+  .comp-seg { height: 100%; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+  .comp-legend {
+    display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem;
+    font-family: var(--font-mono); font-size: 0.68rem;
+  }
+  .comp-legend-item { display: flex; align-items: center; gap: 0.4rem; color: var(--muted); }
+  .comp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* DATA TABLE */
+  .table-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--card-r); overflow: hidden; margin-top: 1.25rem;
+  }
+  .table-header {
+    padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .table-title { font-family: var(--font-head); font-size: 1.05rem; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; padding: 0.7rem 1.2rem;
+    font-family: var(--font-mono); font-size: 0.63rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    background: var(--bg3); border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.025); }
+  tbody td {
+    padding: 0.85rem 1.2rem;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--text);
+  }
+  td .badge {
+    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+    font-size: 0.68rem; font-weight: 500;
+  }
+
+  /* RESET */
+  .reset-btn {
+    margin-top: 2rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 0.55rem 1.2rem; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 0.72rem; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .reset-btn:hover { border-color: var(--rose); color: var(--rose); }
+
+  /* GLOW ACCENT BG */
+  .glow { pointer-events: none; position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.08; z-index: 0; }
+  .glow-1 { width: 500px; height: 500px; background: var(--teal);   top: -100px; left: -100px; }
+  .glow-2 { width: 400px; height: 400px; background: var(--violet); bottom: -80px; right: -80px; }
+
+  /* ANIM */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .fade-up { animation: fadeUp 0.5s ease both; }
+  .fade-up-1 { animation-delay: 0.05s; }
+  .fade-up-2 { animation-delay: 0.12s; }
+  .fade-up-3 { animation-delay: 0.2s; }
+  .fade-up-4 { animation-delay: 0.28s; }
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<header>
+  <div class="logo-mark">IB</div>
+  <div class="header-text">
+    <h1>InBody <em>Analytics</em></h1>
+    <p>Body Composition · Trend Analysis</p>
+  </div>
+  <div class="header-badge">🔒 100% Local — No Upload</div>
+</header>
+
+<main>
+  <!-- UPLOAD -->
+  <section id="upload-section">
+    <div class="drop-zone" id="drop-zone">
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          <polyline points="8 12 12 8 16 12"/>
+          <line x1="12" y1="8" x2="12" y2="20"/>
+        </svg>
+      </div>
+      <h2>Drop your InBody CSV</h2>
+      <p>Drag & drop your exported <strong>InBody CSV file</strong> here, or click below to browse.<br>Your data never leaves your device.</p>
+      <button class="drop-cta" onclick="document.getElementById('file-input').click()">Choose File</button>
+      <input type="file" id="file-input" accept=".csv" />
+      <div class="privacy-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Processed locally in your browser · Zero server contact
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard-section">
+
+    <div class="section-label">Latest Snapshot vs Previous</div>
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="charts-grid">
+      <!-- Weight + Body Fat Trend -->
+      <div class="chart-card wide fade-up fade-up-1">
+        <div class="chart-title">Weight & Body Fat Trend</div>
+        <div class="chart-sub">All recorded sessions · kg</div>
+        <div class="chart-wrap tall"><canvas id="weightChart"></canvas></div>
+      </div>
+
+      <!-- Muscle vs Fat -->
+      <div class="chart-card fade-up fade-up-2">
+        <div class="chart-title">Muscle vs Fat Mass</div>
+        <div class="chart-sub">Skeletal Muscle · Body Fat · kg</div>
+        <div class="chart-wrap"><canvas id="muscleChart"></canvas></div>
+      </div>
+
+      <!-- InBody Score -->
+      <div class="chart-card fade-up fade-up-3">
+        <div class="chart-title">InBody Score</div>
+        <div class="chart-sub">Overall body composition score · /100</div>
+        <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
+      </div>
+
+      <!-- BMR -->
+      <div class="chart-card fade-up fade-up-2">
+        <div class="chart-title">Basal Metabolic Rate</div>
+        <div class="chart-sub">Estimated daily resting calories · kcal</div>
+        <div class="chart-wrap"><canvas id="bmrChart"></canvas></div>
+      </div>
+
+      <!-- Visceral Fat -->
+      <div class="chart-card fade-up fade-up-3">
+        <div class="chart-title">Visceral Fat Level</div>
+        <div class="chart-sub">Abdominal fat risk level</div>
+        <div class="chart-wrap"><canvas id="visceralChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Body Composition Bar -->
+    <div class="chart-card fade-up fade-up-4" style="margin-bottom:1.25rem">
+      <div class="chart-title">Latest Body Composition</div>
+      <div class="chart-sub">Breakdown of total body weight</div>
+      <div class="comp-bar-wrap" id="comp-bar-wrap"></div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-card fade-up fade-up-4">
+      <div class="table-header">
+        <span class="table-title">All Sessions</span>
+        <span class="section-label" style="margin:0">chronological order</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Weight (kg)</th>
+              <th>Muscle (kg)</th>
+              <th>Fat (kg)</th>
+              <th>Fat %</th>
+              <th>BMI</th>
+              <th>BMR (kcal)</th>
+              <th>Score</th>
+              <th>Visceral Fat</th>
+              <th>Waist-Hip</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetDashboard()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+      Upload a different file
+    </button>
+
+  </section>
+</main>
+
+<script>
+const COLORS = {
+  teal:   '#2dd4bf',
+  amber:  '#fbbf24',
+  rose:   '#fb7185',
+  blue:   '#60a5fa',
+  violet: '#a78bfa',
+  green:  '#4ade80',
+  muted:  '#4b5563',
+};
+
+Chart.defaults.color = '#6b7280';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const activeCharts = [];
+
+function makeGradient(ctx, color, alpha = 0.35) {
+  const g = ctx.createLinearGradient(0, 0, 0, 280);
+  g.addColorStop(0, color.replace(')', `, ${alpha})`).replace('rgb', 'rgba'));
+  g.addColorStop(1, color.replace(')', ', 0)').replace('rgb', 'rgba'));
+  return g;
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `${r}, ${g}, ${b}`;
+}
+
+function gradientFromHex(ctx, hex, alpha = 0.35, h = 280) {
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, `rgba(${hexToRgb(hex)}, ${alpha})`);
+  g.addColorStop(1, `rgba(${hexToRgb(hex)}, 0)`);
+  return g;
+}
+
+function baseOpts(title = '') {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#181b22',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        titleColor: '#e8eaf0',
+        bodyColor: '#9ca3af',
+        padding: 12,
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 0 } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { } }
+    }
+  };
+}
+
+// ── PARSE ──
+function parseDate(raw) {
+  const s = String(raw).trim();
+  // Format: YYYYMMDDHHMMSS
+  const y = s.slice(0,4), mo = s.slice(4,6), d = s.slice(6,8);
+  return new Date(`${y}-${mo}-${d}`);
+}
+
+function fmt(d) {
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+}
+
+function val(v) { return v === '-' || v === '' || v == null ? null : parseFloat(v); }
+
+function processCSV(csvText) {
+  const result = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+  const raw = result.data;
+
+  const rows = raw.map(r => ({
+    date:      parseDate(r['Date']),
+    weight:    val(r['Weight(kg)']),
+    muscle:    val(r['Skeletal Muscle Mass(kg)']),
+    fat:       val(r['Body Fat Mass(kg)']),
+    fatPct:    val(r['Percent Body Fat(%)']),
+    bmi:       val(r['BMI(kg/m²)']),
+    bmr:       val(r['Basal Metabolic Rate(kcal)']),
+    score:     val(r['InBody Score']),
+    visceral:  val(r['Visceral Fat Level(Level)']),
+    whr:       val(r['Waist Hip Ratio']),
+    water:     val(r['Total Body Water(L)']),
+  })).filter(r => r.weight !== null);
+
+  // Sort oldest → newest
+  rows.sort((a,b) => a.date - b.date);
+  return rows;
+}
+
+function delta(curr, prev, higherBetter = false) {
+  if (curr == null || prev == null) return null;
+  const d = curr - prev;
+  const pct = prev !== 0 ? ((d / prev) * 100).toFixed(1) : 0;
+  const up = d > 0;
+  // For weight/fat, going up is bad; for muscle/score, going up is good
+  const isGood = higherBetter ? up : !up;
+  return { d: d.toFixed(2), pct, cls: d === 0 ? 'neutral' : (isGood ? 'up' : 'down'), sign: d > 0 ? '+' : '' };
+}
+
+function deltaArrow(info) {
+  if (!info) return '<span class="stat-delta neutral">—</span>';
+  const arrow = info.d > 0 ? '↑' : '↓';
+  return `<div class="stat-delta ${info.cls}">${arrow} ${info.sign}${info.d} (${info.sign}${info.pct}%)</div>`;
+}
+
+function renderStats(rows) {
+  const latest = rows[rows.length - 1];
+  const prev   = rows.length > 1 ? rows[rows.length - 2] : null;
+
+  const cards = [
+    { label: 'Weight',        val: latest.weight, unit: 'kg', d: delta(latest.weight, prev?.weight, false), accent: COLORS.blue },
+    { label: 'Muscle Mass',   val: latest.muscle, unit: 'kg', d: delta(latest.muscle, prev?.muscle, true),  accent: COLORS.teal },
+    { label: 'Body Fat',      val: latest.fat,    unit: 'kg', d: delta(latest.fat,    prev?.fat,    false), accent: COLORS.rose },
+    { label: 'Body Fat',      val: latest.fatPct, unit: '%',  d: delta(latest.fatPct, prev?.fatPct, false), accent: COLORS.amber },
+    { label: 'BMI',           val: latest.bmi,    unit: 'kg/m²', d: delta(latest.bmi, prev?.bmi,    false), accent: COLORS.violet },
+    { label: 'InBody Score',  val: latest.score,  unit: 'pt', d: delta(latest.score,  prev?.score,  true),  accent: COLORS.green },
+    { label: 'BMR',           val: latest.bmr,    unit: 'kcal', d: delta(latest.bmr,  prev?.bmr,    true),  accent: COLORS.teal },
+    { label: 'Visceral Fat',  val: latest.visceral, unit: 'lv', d: delta(latest.visceral, prev?.visceral, false), accent: COLORS.amber },
+  ];
+
+  const el = document.getElementById('stats-row');
+  el.innerHTML = cards.map(c => `
+    <div class="stat-card" style="--accent:${c.accent}">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value">${c.val ?? '—'}<span class="stat-unit">${c.unit}</span></div>
+      ${deltaArrow(c.d)}
+    </div>
+  `).join('');
+}
+
+function renderWeightChart(rows) {
+  const labels = rows.map(r => fmt(r.date));
+  const ctx = document.getElementById('weightChart').getContext('2d');
+  const c = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Weight (kg)',
+          data: rows.map(r => r.weight),
+          borderColor: COLORS.blue,
+          backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.blue, 0.3, 280),
+          tension: 0.4, fill: true, pointRadius: 5,
+          pointBackgroundColor: COLORS.blue, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
+        },
+        {
+          label: 'Fat Mass (kg)',
+          data: rows.map(r => r.fat),
+          borderColor: COLORS.rose,
+          backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.rose, 0.15, 280),
+          tension: 0.4, fill: true, pointRadius: 5,
+          pointBackgroundColor: COLORS.rose, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
+        },
+      ]
+    },
+    options: {
+      ...baseOpts(),
+      plugins: {
+        ...baseOpts().plugins,
+        legend: { display: true, labels: { color: '#9ca3af', boxWidth: 12, boxHeight: 2, usePointStyle: false } }
+      }
+    }
+  });
+  activeCharts.push(c);
+}
+
+function renderMuscleChart(rows) {
+  const labels = rows.map(r => fmt(r.date));
+  const ctx = document.getElementById('muscleChart').getContext('2d');
+  const c = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Skeletal Muscle (kg)',
+          data: rows.map(r => r.muscle),
+          backgroundColor: `rgba(${hexToRgb(COLORS.teal)}, 0.7)`,
+          borderColor: COLORS.teal, borderWidth: 1.5, borderRadius: 6,
+        },
+        {
+          label: 'Body Fat (kg)',
+          data: rows.map(r => r.fat),
+          backgroundColor: `rgba(${hexToRgb(COLORS.rose)}, 0.7)`,
+          borderColor: COLORS.rose, borderWidth: 1.5, borderRadius: 6,
+        },
+      ]
+    },
+    options: {
+      ...baseOpts(),
+      plugins: {
+        ...baseOpts().plugins,
+        legend: { display: true, labels: { color: '#9ca3af', boxWidth: 10, boxHeight: 10 } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+  activeCharts.push(c);
+}
+
+function renderScoreChart(rows) {
+  const labels = rows.map(r => fmt(r.date));
+  const ctx = document.getElementById('scoreChart').getContext('2d');
+  const c = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'InBody Score',
+        data: rows.map(r => r.score),
+        borderColor: COLORS.green,
+        backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.green, 0.25, 220),
+        tension: 0.4, fill: true, pointRadius: 6,
+        pointBackgroundColor: COLORS.green, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
+      }]
+    },
+    options: { ...baseOpts(), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, min: 60, max: 100 } } }
+  });
+  activeCharts.push(c);
+}
+
+function renderBmrChart(rows) {
+  const labels = rows.map(r => fmt(r.date));
+  const ctx = document.getElementById('bmrChart').getContext('2d');
+  const c = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'BMR (kcal)',
+        data: rows.map(r => r.bmr),
+        borderColor: COLORS.violet,
+        backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.violet, 0.25, 220),
+        tension: 0.4, fill: true, pointRadius: 5,
+        pointBackgroundColor: COLORS.violet, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
+      }]
+    },
+    options: baseOpts()
+  });
+  activeCharts.push(c);
+}
+
+function renderVisceralChart(rows) {
+  const labels = rows.map(r => fmt(r.date));
+  const ctx = document.getElementById('visceralChart').getContext('2d');
+  const c = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Visceral Fat Level',
+        data: rows.map(r => r.visceral),
+        backgroundColor: rows.map(r => {
+          const v = r.visceral;
+          if (v == null) return COLORS.muted;
+          if (v <= 4)  return `rgba(${hexToRgb(COLORS.green)}, 0.8)`;
+          if (v <= 7)  return `rgba(${hexToRgb(COLORS.amber)}, 0.8)`;
+          return `rgba(${hexToRgb(COLORS.rose)}, 0.8)`;
+        }),
+        borderRadius: 6, borderWidth: 0,
+      }]
+    },
+    options: {
+      ...baseOpts(),
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, min: 0, max: 12, ticks: { stepSize: 2 } }
+      }
+    }
+  });
+  activeCharts.push(c);
+}
+
+function renderCompBar(row) {
+  const w = row.weight;
+  if (!w || !row.muscle || !row.fat) return;
+  const softLean = Math.max(0, (w - row.fat - row.muscle));
+  const water = row.water ?? 0;
+  const segments = [
+    { label: 'Skeletal Muscle', val: row.muscle, color: COLORS.teal },
+    { label: 'Other Lean',      val: softLean,   color: COLORS.blue },
+    { label: 'Body Fat',        val: row.fat,     color: COLORS.rose },
+  ];
+  const html = `
+    <div style="margin-bottom:0.5rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted)">
+      Total: <strong style="color:var(--text)">${w} kg</strong>
+    </div>
+    <div class="comp-bar">
+      ${segments.map(s => `<div class="comp-seg" style="width:${(s.val/w*100).toFixed(1)}%;background:${s.color}"></div>`).join('')}
+    </div>
+    <div class="comp-legend">
+      ${segments.map(s => `
+        <div class="comp-legend-item">
+          <span class="comp-dot" style="background:${s.color}"></span>
+          ${s.label} — <strong style="color:var(--text)">${s.val.toFixed(1)} kg</strong>
+          <span>(${(s.val/w*100).toFixed(1)}%)</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('comp-bar-wrap').innerHTML = html;
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = [...rows].reverse().map(r => {
+    const scoreColor = r.score >= 80 ? COLORS.green : r.score >= 70 ? COLORS.amber : COLORS.rose;
+    return `<tr>
+      <td>${fmt(r.date)}</td>
+      <td>${r.weight ?? '—'}</td>
+      <td>${r.muscle ?? '—'}</td>
+      <td>${r.fat ?? '—'}</td>
+      <td>${r.fatPct != null ? r.fatPct + '%' : '—'}</td>
+      <td>${r.bmi ?? '—'}</td>
+      <td>${r.bmr ?? '—'}</td>
+      <td><span class="badge" style="background:rgba(${hexToRgb(scoreColor)},0.15);color:${scoreColor}">${r.score ?? '—'}</span></td>
+      <td>${r.visceral ?? '—'}</td>
+      <td>${r.whr ?? '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDashboard(rows) {
+  // Destroy old charts
+  activeCharts.forEach(c => c.destroy());
+  activeCharts.length = 0;
+
+  document.getElementById('upload-section').style.display  = 'none';
+  document.getElementById('dashboard-section').style.display = 'block';
+
+  renderStats(rows);
+  renderWeightChart(rows);
+  renderMuscleChart(rows);
+  renderScoreChart(rows);
+  renderBmrChart(rows);
+  renderVisceralChart(rows);
+  renderCompBar(rows[rows.length - 1]);
+  renderTable(rows);
+}
+
+function resetDashboard() {
+  document.getElementById('upload-section').style.display  = 'flex';
+  document.getElementById('dashboard-section').style.display = 'none';
+  document.getElementById('file-input').value = '';
+  activeCharts.forEach(c => c.destroy());
+  activeCharts.length = 0;
+}
+
+function handleFile(file) {
+  if (!file || !file.name.endsWith('.csv')) {
+    alert('Please select a valid .csv file.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const rows = processCSV(e.target.result);
+      if (rows.length === 0) { alert('No valid data rows found.'); return; }
+      renderDashboard(rows);
+    } catch(err) {
+      alert('Error parsing CSV: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// File input
+document.getElementById('file-input').addEventListener('change', e => handleFile(e.target.files[0]));
+
+// Drag & drop
+const zone = document.getElementById('drop-zone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  handleFile(e.dataTransfer.files[0]);
+});
+zone.addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON') document.getElementById('file-input').click();
+});
+</script>
+</body>
+</html>
