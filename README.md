@@ -12,6 +12,14 @@ Most health data tools require you to upload sensitive information to their serv
 
 Your health data stays where it belongs: **with you.**
 
+## 📊 Compatibility
+This tool was specifically developed and tested using data exports from the **InBodyDial H30**.
+While it may work with other InBody devices, CSV headers can vary between models and app versions. If your data isn't rendering correctly:
+* Ensure your export is in CSV format.
+* Check if your column headers match the standard InBodyDial output.
+  
+Contributions welcome: If you have an export from a different model (H20, 270, 570, etc.) that isn't working, feel free to open an issue with a redacted sample of your CSV headers!
+
 ## ✨ Features
 * **8 Real-time Stat Cards:** Instantly view latest values for Weight, Muscle Mass, Body Fat, BMI, InBody Score, BMR, and Visceral Fat.
 * **Dynamic Deltas:** Automatically calculates the difference (↑/↓) and percentage change between your two most recent sessions.
