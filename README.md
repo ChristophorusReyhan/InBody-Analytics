@@ -3,6 +3,7 @@
 A sleek, privacy-focused web application to visualize your InBody measurement history. This tool transforms your exported data into an interactive dashboard with trend analysis, body composition breakdowns, and progress tracking—all without your data ever leaving your computer.
 
 **Live Demo:** [inbody-analytics.creyhan.site](https://inbody-analytics.creyhan.site/)
+<img width="1349" height="2787" alt="image" src="https://github.com/user-attachments/assets/2c038349-914a-4484-aa9e-aa5baaae918a" />
 
 ## 🛡️ Privacy First
 Most health data tools require you to upload sensitive information to their servers. This project takes a different approach:
@@ -12,37 +13,32 @@ Most health data tools require you to upload sensitive information to their serv
 
 Your health data stays where it belongs: **with you.**
 
-## 📊 Compatibility
-This tool was specifically developed and tested using data exports from the **InBodyDial H30**.
-While it may work with other InBody devices, CSV headers can vary between models and app versions. If your data isn't rendering correctly:
-* Ensure your export is in CSV format.
-* Check if your column headers match the standard InBodyDial output.
-  
-Contributions welcome: If you have an export from a different model (H20, 270, 570, etc.) that isn't working, feel free to open an issue with a redacted sample of your CSV headers!
-
-## ✨ Features
-* **8 Real-time Stat Cards:** Instantly view latest values for Weight, Muscle Mass, Body Fat, BMI, InBody Score, BMR, and Visceral Fat.
+## ✨ Latest Features (New UI)
+* **8 Real-time Stat Cards:** Instantly view latest values for Weight, Muscle Mass, Body Fat (kg & %), Muscle-to-Fat Ratio, Lean Mass Index, InBody Score, and Visceral Fat.
+* **TDEE Calculator:** Integrated Total Daily Energy Expenditure calculator based on your latest body composition and selectable activity levels (Sedentary to Extra Active).
 * **Dynamic Deltas:** Automatically calculates the difference (↑/↓) and percentage change between your two most recent sessions.
-* **Interactive Visualizations:**
-    * **Trend Charts:** Track Weight and Fat over time.
-    * **Muscle vs. Fat:** A side-by-side comparison bar chart.
-    * **InBody Score & BMR:** Line graphs to monitor overall health scores and metabolic rate.
-    * **Visceral Fat Level:** A color-coded bar (Green/Amber/Red) for quick health assessment.
-* **Body Composition Bar:** A visual breakdown of Muscle, Lean, and Fat as a percentage of total body weight.
-* **Comprehensive Session History:** A detailed table of all recorded measurements with color-coded score badges.
+* **Advanced Visualizations:**
+    * **Muscle to Fat Ratio:** A new dedicated trend line to track body composition quality.
+    * **Trend Charts:** Track Weight vs. Fat Mass over time.
+    * **Muscle vs. Fat:** Side-by-side comparison bar charts.
+    * **InBody Score & BMR:** monitor overall health scores and metabolic rate trends.
+    * **Visceral Fat Level:** Color-coded tracking to ensure you stay in the healthy range.
+* **Body Composition Bar:** A multi-segment visual breakdown of Skeletal Muscle, Other Lean Mass, and Body Fat.
+
+## 📊 Compatibility
+Specifically tested with **InBodyDial H30** exports. 
+* Ensure your export is in **CSV format**.
+* If you have an export from a different model (H20, 270, 570, etc.) that isn't rendering, please open an issue with a redacted sample of your CSV headers!
 
 ## 🚀 How to Use
-1.  **Export:** Export and download your measurement data as a CSV from your InBody application.
-2.  **Upload:** Drag and drop the CSV file into the dashboard at [inbody-analytics.creyhan.site](https://inbody-analytics.creyhan.site/).
-3.  **Analyze:** View your charts and stats instantly. 
+1. **Export:** Download your data as a CSV from your InBody app.
+2. **Upload:** Drag and drop the file into the [Dashboard](https://inbody-analytics.creyhan.site/).
+3. **Analyze:** View your charts and TDEE instantly. 
 
 ## 🛠️ Built With
-* **Vanilla JS/HTML5/CSS3:** For a lightweight and fast user interface.
-* **[PapaParse](https://www.papaparse.com/):** For robust, in-browser CSV parsing.
-* **Chart.js:** For responsive and interactive data visualization.
-
-## 📝 License
-This project is open-source. Feel free to fork, modify, and use it for your personal fitness tracking.
+* **Vanilla JS/HTML5/CSS3**
+* **PapaParse** (CSV Parsing)
+* **Chart.js** (Visualizations)
 
 ---
-*Disclaimer: This tool is intended for personal data visualization only and should not be used as a substitute for professional medical advice.*
+*Disclaimer: For personal data visualization only. Not a substitute for professional medical advice.*
