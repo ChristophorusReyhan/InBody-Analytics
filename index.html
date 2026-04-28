@@ -25,6 +25,7 @@
     --blue:      #60a5fa;
     --violet:    #a78bfa;
     --green:     #4ade80;
+    --orange:    #fb923c;
     --card-r:    16px;
     --font-head: 'DM Serif Display', serif;
     --font-body: 'Instrument Sans', sans-serif;
@@ -32,7 +33,6 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -43,10 +43,8 @@
     overflow-x: hidden;
   }
 
-  /* ── NOISE OVERLAY ── */
   body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     opacity: 0.025;
   }
@@ -54,69 +52,51 @@
   /* ── HEADER ── */
   header {
     position: relative; z-index: 10;
-    padding: 2.5rem 3rem 2rem;
+    padding: 2rem 3rem 1.75rem;
     border-bottom: 1px solid var(--border);
-    display: flex; align-items: flex-end; gap: 2rem;
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
     background: linear-gradient(180deg, rgba(45,212,191,0.04) 0%, transparent 100%);
   }
   .logo-mark {
-    width: 52px; height: 52px;
+    width: 48px; height: 48px;
     background: linear-gradient(135deg, var(--teal), var(--violet));
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
     font-family: var(--font-mono); font-weight: 500; font-size: 0.75rem;
-    color: #000; flex-shrink: 0;
-    box-shadow: 0 0 32px rgba(45,212,191,0.25);
+    color: #000; flex-shrink: 0; box-shadow: 0 0 32px rgba(45,212,191,0.25);
   }
   .header-text h1 {
-    font-family: var(--font-head);
-    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-family: var(--font-head); font-size: clamp(1.4rem, 4vw, 2.2rem);
     letter-spacing: -0.02em; line-height: 1;
   }
   .header-text h1 em { font-style: italic; color: var(--teal); }
   .header-text p {
-    font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem;
+    font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem;
     font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
   }
   .header-badge {
     margin-left: auto;
-    background: rgba(45,212,191,0.08);
-    border: 1px solid rgba(45,212,191,0.2);
+    background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.2);
     border-radius: 999px; padding: 0.3rem 0.9rem;
-    font-size: 0.7rem; font-family: var(--font-mono);
-    color: var(--teal); white-space: nowrap;
+    font-size: 0.7rem; font-family: var(--font-mono); color: var(--teal); white-space: nowrap;
   }
 
-  /* ── MAIN WRAPPER ── */
-  main { position: relative; z-index: 1; padding: 2.5rem 3rem; max-width: 1440px; margin: 0 auto; }
+  /* ── MAIN ── */
+  main { position: relative; z-index: 1; padding: 2rem 3rem; max-width: 1440px; margin: 0 auto; }
 
-  /* ── UPLOAD ZONE ── */
-  #upload-section {
-    display: flex; align-items: center; justify-content: center;
-    min-height: 60vh;
-  }
+  /* ── UPLOAD ── */
+  #upload-section { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
   .drop-zone {
     width: 100%; max-width: 600px;
-    border: 1.5px dashed rgba(45,212,191,0.3);
-    border-radius: 24px;
-    padding: 4rem 3rem;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    background: rgba(45,212,191,0.02);
-    position: relative;
-    overflow: hidden;
+    border: 1.5px dashed rgba(45,212,191,0.3); border-radius: 24px; padding: 4rem 3rem;
+    text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    background: rgba(45,212,191,0.02); position: relative; overflow: hidden;
   }
   .drop-zone::before {
-    content: '';
-    position: absolute; inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: radial-gradient(ellipse at 50% 0%, rgba(45,212,191,0.06) 0%, transparent 70%);
     pointer-events: none;
   }
-  .drop-zone.drag-over {
-    border-color: var(--teal);
-    background: rgba(45,212,191,0.06);
-  }
+  .drop-zone.drag-over { border-color: var(--teal); background: rgba(45,212,191,0.06); }
   .drop-icon {
     width: 64px; height: 64px; margin: 0 auto 1.5rem;
     background: rgba(45,212,191,0.1); border: 1px solid rgba(45,212,191,0.2);
@@ -127,160 +107,192 @@
   .drop-zone p { color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
   .drop-zone p strong { color: var(--text); }
   .drop-cta {
-    margin-top: 1.8rem;
-    display: inline-block;
+    margin-top: 1.8rem; display: inline-block;
     background: linear-gradient(135deg, var(--teal), var(--violet));
     color: #000; font-weight: 600; font-size: 0.85rem;
     padding: 0.7rem 1.8rem; border-radius: 999px;
     cursor: pointer; border: none; font-family: var(--font-body);
-    transition: opacity 0.2s, transform 0.15s;
-    box-shadow: 0 4px 24px rgba(45,212,191,0.2);
+    transition: opacity 0.2s, transform 0.15s; box-shadow: 0 4px 24px rgba(45,212,191,0.2);
   }
   .drop-cta:hover { opacity: 0.9; transform: translateY(-1px); }
   #file-input { display: none; }
-
   .privacy-note {
-    margin-top: 1.5rem;
-    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
     font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono);
   }
   .privacy-note svg { color: var(--green); }
 
   /* ── DASHBOARD ── */
   #dashboard-section { display: none; }
-
   .section-label {
     font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
     letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.5rem;
   }
 
-  /* STAT CARDS ROW */
+  /* WARN BANNER */
+  .warn-banner {
+    background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 10px; padding: 0.7rem 1rem; margin-bottom: 1.5rem;
+    font-family: var(--font-mono); font-size: 0.68rem; color: var(--amber);
+    display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.5;
+  }
+  .warn-banner.hidden { display: none; }
+
+  /* STAT CARDS */
   .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem; margin-bottom: 2rem;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.9rem; margin-bottom: 2rem;
   }
   .stat-card {
     background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--card-r); padding: 1.25rem 1.4rem;
-    position: relative; overflow: hidden;
-    transition: border-color 0.2s;
+    border-radius: var(--card-r); padding: 1.1rem 1.2rem;
+    position: relative; overflow: hidden; transition: border-color 0.2s;
   }
   .stat-card::after {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: var(--accent, var(--teal));
-    border-radius: 2px 2px 0 0;
+    background: var(--accent, var(--teal)); border-radius: 2px 2px 0 0;
   }
   .stat-card:hover { border-color: rgba(255,255,255,0.15); }
   .stat-label {
-    font-family: var(--font-mono); font-size: 0.62rem; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.6rem;
+    font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem;
   }
-  .stat-value {
-    font-family: var(--font-mono); font-size: 1.75rem; font-weight: 500;
-    line-height: 1; color: var(--text);
-  }
-  .stat-unit { font-size: 0.75rem; color: var(--muted); margin-left: 0.2rem; }
-  .stat-delta {
-    margin-top: 0.5rem; font-size: 0.72rem; font-family: var(--font-mono);
-    display: flex; align-items: center; gap: 0.25rem;
-  }
-  .stat-delta.up { color: var(--green); }
-  .stat-delta.down { color: var(--rose); }
-  .stat-delta.neutral { color: var(--muted); }
+  .stat-value { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 500; line-height: 1; }
+  .stat-unit { font-size: 0.7rem; color: var(--muted); margin-left: 0.2rem; }
+  .stat-delta { margin-top: 0.45rem; font-size: 0.7rem; font-family: var(--font-mono); display: flex; align-items: center; gap: 0.25rem; }
+  .stat-delta.up     { color: var(--green); }
+  .stat-delta.down   { color: var(--rose); }
+  .stat-delta.neutral{ color: var(--muted); }
+  .stat-tip { margin-top: 0.35rem; font-size: 0.58rem; color: var(--muted); font-family: var(--font-mono); line-height: 1.4; }
 
   /* CHARTS GRID */
-  .charts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-  @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
-
+  .charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; margin-bottom: 1.2rem; }
   .chart-card {
     background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--card-r); padding: 1.5rem;
-    position: relative; overflow: hidden;
+    border-radius: var(--card-r); padding: 1.4rem; position: relative; overflow: hidden;
   }
   .chart-card.wide { grid-column: 1 / -1; }
-  .chart-title {
-    font-family: var(--font-head); font-size: 1.1rem; margin-bottom: 0.2rem;
-  }
+  .chart-title { font-family: var(--font-head); font-size: 1.05rem; margin-bottom: 0.2rem; }
   .chart-sub {
-    font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.25rem;
+    font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.1rem;
   }
   .chart-wrap { position: relative; height: 220px; }
-  .chart-wrap.tall { height: 280px; }
+  .chart-wrap.tall { height: 260px; }
 
-  /* COMPOSITION BAR */
+  /* COMP BAR */
   .comp-bar-wrap { margin-top: 0.5rem; }
-  .comp-bar {
-    height: 14px; border-radius: 999px; overflow: hidden;
-    display: flex; margin-bottom: 0.8rem;
-    background: var(--bg3);
-  }
+  .comp-bar { height: 14px; border-radius: 999px; overflow: hidden; display: flex; margin-bottom: 0.8rem; background: var(--bg3); }
   .comp-seg { height: 100%; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
-  .comp-legend {
-    display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem;
-    font-family: var(--font-mono); font-size: 0.68rem;
-  }
+  .comp-legend { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; font-family: var(--font-mono); font-size: 0.68rem; }
   .comp-legend-item { display: flex; align-items: center; gap: 0.4rem; color: var(--muted); }
   .comp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-  /* DATA TABLE */
-  .table-card {
+  /* ── TDEE ── */
+  .tdee-card {
     background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--card-r); overflow: hidden; margin-top: 1.25rem;
+    border-radius: var(--card-r); padding: 1.4rem; margin-bottom: 1.2rem;
+    position: relative; overflow: hidden;
   }
-  .table-header {
-    padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
+  .tdee-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--amber), var(--orange));
   }
+  .tdee-body { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start; margin-top: 1rem; }
+  .tdee-levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.65rem; flex: 1; min-width: 260px; }
+  .tdee-level-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.7rem 0.85rem; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s; text-align: left;
+  }
+  .tdee-level-btn:hover { border-color: rgba(251,191,36,0.35); }
+  .tdee-level-btn.active { border-color: var(--amber); background: rgba(251,191,36,0.07); }
+  .tdee-level-name { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; color: var(--text); display: block; margin-bottom: 0.2rem; }
+  .tdee-level-desc { font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted); line-height: 1.4; }
+  .tdee-result {
+    flex-shrink: 0; min-width: 190px;
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.3rem;
+  }
+  .tdee-result-label { font-family: var(--font-mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
+  .tdee-result-val { font-family: var(--font-mono); font-size: 2rem; font-weight: 500; color: var(--amber); line-height: 1; }
+  .tdee-result-unit { font-size: 0.72rem; color: var(--muted); }
+  .tdee-breakdown { margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.32rem; }
+  .tdee-breakdown-row { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.63rem; }
+  .tdee-breakdown-row span:first-child { color: var(--muted); }
+
+  /* TABLE */
+  .table-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--card-r); overflow: hidden; margin-top: 1.2rem; }
+  .table-header { padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .table-title { font-family: var(--font-head); font-size: 1.05rem; }
   table { width: 100%; border-collapse: collapse; }
   thead th {
-    text-align: left; padding: 0.7rem 1.2rem;
-    font-family: var(--font-mono); font-size: 0.63rem;
+    text-align: left; padding: 0.65rem 1rem;
+    font-family: var(--font-mono); font-size: 0.58rem;
     text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
-    background: var(--bg3); border-bottom: 1px solid var(--border);
+    background: var(--bg3); border-bottom: 1px solid var(--border); white-space: nowrap;
   }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: rgba(255,255,255,0.025); }
-  tbody td {
-    padding: 0.85rem 1.2rem;
-    font-family: var(--font-mono); font-size: 0.78rem; color: var(--text);
-  }
-  td .badge {
-    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
-    font-size: 0.68rem; font-weight: 500;
-  }
+  tbody td { padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.73rem; color: var(--text); white-space: nowrap; }
+  td .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.63rem; font-weight: 500; }
+  td .dim   { color: var(--muted); font-size: 0.63rem; }
 
   /* RESET */
   .reset-btn {
-    margin-top: 2rem;
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: transparent; border: 1px solid var(--border);
-    color: var(--muted); padding: 0.55rem 1.2rem; border-radius: 999px;
-    font-family: var(--font-mono); font-size: 0.72rem; cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    margin-top: 2rem; display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 0.55rem 1.2rem; border-radius: 999px; font-family: var(--font-mono);
+    font-size: 0.72rem; cursor: pointer; transition: border-color 0.2s, color 0.2s;
   }
   .reset-btn:hover { border-color: var(--rose); color: var(--rose); }
 
-  /* GLOW ACCENT BG */
+  /* GLOW */
   .glow { pointer-events: none; position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.08; z-index: 0; }
   .glow-1 { width: 500px; height: 500px; background: var(--teal);   top: -100px; left: -100px; }
   .glow-2 { width: 400px; height: 400px; background: var(--violet); bottom: -80px; right: -80px; }
 
   /* ANIM */
   @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-  .fade-up { animation: fadeUp 0.5s ease both; }
+  .fade-up   { animation: fadeUp 0.5s ease both; }
   .fade-up-1 { animation-delay: 0.05s; }
   .fade-up-2 { animation-delay: 0.12s; }
-  .fade-up-3 { animation-delay: 0.2s; }
+  .fade-up-3 { animation-delay: 0.20s; }
   .fade-up-4 { animation-delay: 0.28s; }
+  .fade-up-5 { animation-delay: 0.36s; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    header { padding: 1.25rem 1.25rem 1rem; gap: 1rem; }
+    .header-badge { margin-left: 0; font-size: 0.62rem; padding: 0.25rem 0.7rem; }
+    main { padding: 1.1rem; }
+
+    .stats-row { grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
+    .stat-value { font-size: 1.3rem; }
+    .stat-card { padding: 0.9rem; }
+
+    .charts-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .chart-card.wide { grid-column: 1; }
+    .chart-wrap { height: 180px; }
+    .chart-wrap.tall { height: 200px; }
+
+    .tdee-body { flex-direction: column; gap: 1rem; }
+    .tdee-result { min-width: unset; width: 100%; }
+    .tdee-levels { grid-template-columns: repeat(2, 1fr); }
+
+    .drop-zone { padding: 2.5rem 1.5rem; }
+    .drop-zone h2 { font-size: 1.4rem; }
+
+    thead th, tbody td { padding: 0.55rem 0.65rem; }
+  }
+
+  @media (max-width: 480px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-value { font-size: 1.15rem; }
+    .chart-wrap { height: 155px; }
+    .chart-wrap.tall { height: 175px; }
+    .tdee-levels { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -298,6 +310,7 @@
 </header>
 
 <main>
+
   <!-- UPLOAD -->
   <section id="upload-section">
     <div class="drop-zone" id="drop-zone">
@@ -322,73 +335,97 @@
   <!-- DASHBOARD -->
   <section id="dashboard-section">
 
+    <div class="warn-banner hidden" id="warn-banner">
+      ⚠️ <span id="warn-text"></span>
+    </div>
+
     <div class="section-label">Latest Snapshot vs Previous</div>
     <div class="stats-row" id="stats-row"></div>
 
     <div class="charts-grid">
-      <!-- Weight + Body Fat Trend -->
+
       <div class="chart-card wide fade-up fade-up-1">
         <div class="chart-title">Weight & Body Fat Trend</div>
         <div class="chart-sub">All recorded sessions · kg</div>
         <div class="chart-wrap tall"><canvas id="weightChart"></canvas></div>
       </div>
 
-      <!-- Muscle vs Fat -->
       <div class="chart-card fade-up fade-up-2">
         <div class="chart-title">Muscle vs Fat Mass</div>
-        <div class="chart-sub">Skeletal Muscle · Body Fat · kg</div>
+        <div class="chart-sub">Skeletal Muscle · Body Fat · kg per session</div>
         <div class="chart-wrap"><canvas id="muscleChart"></canvas></div>
       </div>
 
-      <!-- InBody Score -->
       <div class="chart-card fade-up fade-up-3">
+        <div class="chart-title">Muscle-to-Fat Ratio</div>
+        <div class="chart-sub">Recomposition progress · higher = leaner physique</div>
+        <div class="chart-wrap"><canvas id="ratioChart"></canvas></div>
+      </div>
+
+      <div class="chart-card fade-up fade-up-2">
         <div class="chart-title">InBody Score</div>
         <div class="chart-sub">Overall body composition score · /100</div>
         <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
       </div>
 
-      <!-- BMR -->
-      <div class="chart-card fade-up fade-up-2">
+      <div class="chart-card fade-up fade-up-3">
         <div class="chart-title">Basal Metabolic Rate</div>
-        <div class="chart-sub">Estimated daily resting calories · kcal</div>
+        <div class="chart-sub">Estimated daily resting energy expenditure · kcal</div>
         <div class="chart-wrap"><canvas id="bmrChart"></canvas></div>
       </div>
 
-      <!-- Visceral Fat -->
-      <div class="chart-card fade-up fade-up-3">
+      <div class="chart-card fade-up fade-up-2">
         <div class="chart-title">Visceral Fat Level</div>
-        <div class="chart-sub">Abdominal fat risk level</div>
+        <div class="chart-sub">Abdominal fat risk · green ≤4 · amber ≤7 · red >7</div>
         <div class="chart-wrap"><canvas id="visceralChart"></canvas></div>
       </div>
+
     </div>
 
     <!-- Body Composition Bar -->
-    <div class="chart-card fade-up fade-up-4" style="margin-bottom:1.25rem">
+    <div class="chart-card fade-up fade-up-4" style="margin-bottom:1.2rem">
       <div class="chart-title">Latest Body Composition</div>
       <div class="chart-sub">Breakdown of total body weight</div>
       <div class="comp-bar-wrap" id="comp-bar-wrap"></div>
     </div>
 
+    <!-- TDEE CALCULATOR -->
+    <div class="tdee-card fade-up fade-up-4">
+      <div class="chart-title">TDEE Calculator</div>
+      <div class="chart-sub">Derived from your latest BMR · select activity level to estimate daily calorie targets</div>
+      <div class="tdee-body">
+        <div class="tdee-levels" id="tdee-levels"></div>
+        <div class="tdee-result">
+          <div class="tdee-result-label">Total Daily Energy Expenditure</div>
+          <div class="tdee-result-val" id="tdee-val">—</div>
+          <div class="tdee-result-unit">kcal / day</div>
+          <div class="tdee-breakdown" id="tdee-breakdown"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Data Table -->
-    <div class="table-card fade-up fade-up-4">
+    <div class="table-card fade-up fade-up-5">
       <div class="table-header">
         <span class="table-title">All Sessions</span>
-        <span class="section-label" style="margin:0">chronological order</span>
+        <span class="section-label" style="margin:0">newest first</span>
       </div>
       <div style="overflow-x:auto">
-        <table id="data-table">
+        <table>
           <thead>
             <tr>
               <th>Date</th>
-              <th>Weight (kg)</th>
-              <th>Muscle (kg)</th>
-              <th>Fat (kg)</th>
+              <th>Weight</th>
+              <th>Muscle</th>
+              <th>Fat</th>
               <th>Fat %</th>
+              <th>M:F Ratio</th>
+              <th>LMI</th>
               <th>BMI</th>
-              <th>BMR (kcal)</th>
+              <th>BMR</th>
               <th>Score</th>
-              <th>Visceral Fat</th>
-              <th>Waist-Hip</th>
+              <th>Visceral</th>
+              <th>WHR</th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>
@@ -405,14 +442,58 @@
 </main>
 
 <script>
+/* ═══════════════════════════════════════
+   ENHANCEMENT 1 — HEADER NORMALIZATION
+   Fuzzy regex-based column mapping so the
+   dashboard works across locales & app versions
+   ═══════════════════════════════════════ */
+const COLUMN_ALIASES = {
+  date:     [/^date$/i],
+  weight:   [/weight\s*\(kg\)/i, /body\s*weight/i, /weight/i],
+  muscle:   [/skeletal\s*muscle\s*mass\s*\(kg\)/i, /smm\s*\(kg\)/i, /skeletal\s*muscle/i, /muscle\s*mass/i, /\bsmm\b/i],
+  fat:      [/body\s*fat\s*mass\s*\(kg\)/i, /fat\s*mass\s*\(kg\)/i, /body\s*fat\s*\(kg\)/i, /fat\s*mass/i],
+  fatPct:   [/percent\s*body\s*fat\s*\(%\)/i, /body\s*fat\s*\(%\)/i, /fat\s*\(%\)/i, /body\s*fat%/i, /fat%/i],
+  bmi:      [/bmi\s*\(kg\/m[²2]\)/i, /body\s*mass\s*index/i, /\bbmi\b/i],
+  bmr:      [/basal\s*metabolic\s*rate\s*\(kcal\)/i, /bmr\s*\(kcal\)/i, /\bbmr\b/i, /basal\s*metabolic/i],
+  score:    [/inbody\s*score/i, /body\s*score/i, /\bscore\b/i],
+  visceral: [/visceral\s*fat\s*level\s*\(level\)/i, /visceral\s*fat\s*level/i, /visceral\s*fat/i, /\bvfl\b/i],
+  whr:      [/waist\s*hip\s*ratio/i, /waist[-\s]hip/i, /\bwhr\b/i],
+  water:    [/total\s*body\s*water\s*\(l\)/i, /total\s*body\s*water/i, /\btbw\b/i],
+  height:   [/height\s*\(cm\)/i, /height\s*\(m\)/i, /\bheight\b/i],
+};
+
+function buildColumnMap(headers) {
+  const map = {};
+  for (const [field, patterns] of Object.entries(COLUMN_ALIASES)) {
+    let found = null;
+    // Try patterns in declared order (most specific first) so broad
+    // fallbacks like /visceral\s*fat/ don't steal "Visceral Fat Area"
+    // before "Visceral Fat Level" gets a chance.
+    for (const pattern of patterns) {
+      found = headers.find(h => pattern.test(h.trim()));
+      if (found) break;
+    }
+    if (found) map[field] = found;
+  }
+  return map;
+}
+
+function getVal(row, map, field) {
+  const col = map[field];
+  if (!col) return null;
+  const v = row[col];
+  if (v === undefined || v === null) return null;
+  const s = String(v).trim();
+  return (s === '' || s === '-') ? null : parseFloat(s);
+}
+
+/* ═══════════════════════════════════════
+   CHART HELPERS
+   ═══════════════════════════════════════ */
 const COLORS = {
-  teal:   '#2dd4bf',
-  amber:  '#fbbf24',
-  rose:   '#fb7185',
-  blue:   '#60a5fa',
-  violet: '#a78bfa',
-  green:  '#4ade80',
-  muted:  '#4b5563',
+  teal:'#2dd4bf', amber:'#fbbf24', rose:'#fb7185',
+  blue:'#60a5fa', violet:'#a78bfa', green:'#4ade80',
+  orange:'#fb923c', muted:'#4b5563',
 };
 
 Chart.defaults.color = '#6b7280';
@@ -422,270 +503,254 @@ Chart.defaults.font.size = 11;
 
 const activeCharts = [];
 
-function makeGradient(ctx, color, alpha = 0.35) {
-  const g = ctx.createLinearGradient(0, 0, 0, 280);
-  g.addColorStop(0, color.replace(')', `, ${alpha})`).replace('rgb', 'rgba'));
-  g.addColorStop(1, color.replace(')', ', 0)').replace('rgb', 'rgba'));
+function hex3(hex) {
+  return [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)].join(', ');
+}
+function grad(ctx, hex, a=0.32, h=260) {
+  const g = ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0, `rgba(${hex3(hex)},${a})`);
+  g.addColorStop(1, `rgba(${hex3(hex)},0)`);
   return g;
 }
-
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return `${r}, ${g}, ${b}`;
-}
-
-function gradientFromHex(ctx, hex, alpha = 0.35, h = 280) {
-  const g = ctx.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, `rgba(${hexToRgb(hex)}, ${alpha})`);
-  g.addColorStop(1, `rgba(${hexToRgb(hex)}, 0)`);
-  return g;
-}
-
-function baseOpts(title = '') {
+function base() {
   return {
-    responsive: true,
-    maintainAspectRatio: false,
+    responsive: true, maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        backgroundColor: '#181b22',
-        borderColor: 'rgba(255,255,255,0.1)',
-        borderWidth: 1,
-        titleColor: '#e8eaf0',
-        bodyColor: '#9ca3af',
-        padding: 12,
-      }
+      tooltip: { backgroundColor:'#181b22', borderColor:'rgba(255,255,255,0.1)', borderWidth:1, titleColor:'#e8eaf0', bodyColor:'#9ca3af', padding:12 }
     },
     scales: {
-      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 0 } },
-      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { } }
+      x: { grid:{ color:'rgba(255,255,255,0.04)' }, ticks:{ maxRotation:0, maxTicksLimit:6 } },
+      y: { grid:{ color:'rgba(255,255,255,0.04)' } }
     }
   };
 }
 
-// ── PARSE ──
+/* ═══════════════════════════════════════
+   CSV PARSING
+   ═══════════════════════════════════════ */
 function parseDate(raw) {
-  const s = String(raw).trim();
-  // Format: YYYYMMDDHHMMSS
-  const y = s.slice(0,4), mo = s.slice(4,6), d = s.slice(6,8);
-  return new Date(`${y}-${mo}-${d}`);
+  const s = String(raw).replace(/\ufeff/g,'').trim();
+  if (/^\d{14}$/.test(s)) return new Date(`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`);
+  return new Date(s);
 }
+function fmt(d) { return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}); }
 
-function fmt(d) {
-  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
-}
+let _heightM = null;
 
-function val(v) { return v === '-' || v === '' || v == null ? null : parseFloat(v); }
+function processCSV(text) {
+  const result = Papa.parse(text.trimStart(), { header:true, skipEmptyLines:true });
+  const headers = result.meta.fields || [];
+  const map = buildColumnMap(headers);
 
-function processCSV(csvText) {
-  const result = Papa.parse(csvText, { header: true, skipEmptyLines: true });
-  const raw = result.data;
+  // Warn if critical columns missing
+  const missing = ['weight','muscle','fat','bmr'].filter(f => !map[f]);
+  const banner  = document.getElementById('warn-banner');
+  if (missing.length) {
+    document.getElementById('warn-text').textContent =
+      `Could not auto-detect columns for: ${missing.join(', ')}. Charts for those metrics will be empty. ` +
+      `Detected headers: ${headers.slice(0,6).join(', ')}…`;
+    banner.classList.remove('hidden');
+  } else { banner.classList.add('hidden'); }
 
-  const rows = raw.map(r => ({
-    date:      parseDate(r['Date']),
-    weight:    val(r['Weight(kg)']),
-    muscle:    val(r['Skeletal Muscle Mass(kg)']),
-    fat:       val(r['Body Fat Mass(kg)']),
-    fatPct:    val(r['Percent Body Fat(%)']),
-    bmi:       val(r['BMI(kg/m²)']),
-    bmr:       val(r['Basal Metabolic Rate(kcal)']),
-    score:     val(r['InBody Score']),
-    visceral:  val(r['Visceral Fat Level(Level)']),
-    whr:       val(r['Waist Hip Ratio']),
-    water:     val(r['Total Body Water(L)']),
-  })).filter(r => r.weight !== null);
+  const rows = result.data.map(r => {
+    const weight   = getVal(r, map, 'weight');
+    const muscle   = getVal(r, map, 'muscle');
+    const fat      = getVal(r, map, 'fat');
+    const bmi      = getVal(r, map, 'bmi');
 
-  // Sort oldest → newest
+    // Height: explicit column first, then derive from BMI
+    let heightM = null;
+    const hv = getVal(r, map, 'height');
+    if (hv != null) heightM = hv > 10 ? hv / 100 : hv;
+    else if (bmi && weight && bmi > 0) heightM = Math.sqrt(weight / bmi);
+    if (heightM && !isNaN(heightM)) _heightM = heightM;
+
+    // Derived metrics — ENHANCEMENT 2
+    const mfRatio = (muscle && fat && fat > 0) ? +(muscle / fat).toFixed(2) : null;
+    const lmi     = (muscle && heightM)         ? +(muscle / (heightM * heightM)).toFixed(1) : null;
+
+    const dateRaw = map.date ? r[map.date] : Object.values(r)[0];
+    return {
+      date:     parseDate(dateRaw),
+      weight, muscle, fat,
+      fatPct:   getVal(r, map, 'fatPct'),
+      bmi,
+      bmr:      getVal(r, map, 'bmr'),
+      score:    getVal(r, map, 'score'),
+      visceral: getVal(r, map, 'visceral'),
+      whr:      getVal(r, map, 'whr'),
+      water:    getVal(r, map, 'water'),
+      mfRatio, lmi, heightM,
+    };
+  }).filter(r => r.weight != null && !isNaN(r.date));
+
   rows.sort((a,b) => a.date - b.date);
+
+  // Back-fill LMI using last known height
+  if (_heightM) {
+    rows.forEach(r => {
+      if (r.lmi == null && r.muscle) r.lmi = +(r.muscle / (_heightM * _heightM)).toFixed(1);
+    });
+  }
   return rows;
 }
 
-function delta(curr, prev, higherBetter = false) {
+/* ═══════════════════════════════════════
+   DELTA / STAT CARDS
+   ═══════════════════════════════════════ */
+function delta(curr, prev, higher=false) {
   if (curr == null || prev == null) return null;
   const d = curr - prev;
-  const pct = prev !== 0 ? ((d / prev) * 100).toFixed(1) : 0;
-  const up = d > 0;
-  // For weight/fat, going up is bad; for muscle/score, going up is good
-  const isGood = higherBetter ? up : !up;
-  return { d: d.toFixed(2), pct, cls: d === 0 ? 'neutral' : (isGood ? 'up' : 'down'), sign: d > 0 ? '+' : '' };
+  const pct = prev !== 0 ? ((d/prev)*100).toFixed(1) : 0;
+  const good = higher ? d > 0 : d < 0;
+  return { d:d.toFixed(2), pct, cls: d===0?'neutral':(good?'up':'down'), sign:d>0?'+':'' };
 }
-
-function deltaArrow(info) {
+function arrow(info) {
   if (!info) return '<span class="stat-delta neutral">—</span>';
-  const arrow = info.d > 0 ? '↑' : '↓';
-  return `<div class="stat-delta ${info.cls}">${arrow} ${info.sign}${info.d} (${info.sign}${info.pct}%)</div>`;
+  const a = parseFloat(info.d) > 0 ? '↑' : '↓';
+  return `<div class="stat-delta ${info.cls}">${a} ${info.sign}${info.d} (${info.sign}${info.pct}%)</div>`;
 }
 
 function renderStats(rows) {
-  const latest = rows[rows.length - 1];
-  const prev   = rows.length > 1 ? rows[rows.length - 2] : null;
+  const l = rows[rows.length-1];
+  const p = rows.length > 1 ? rows[rows.length-2] : null;
 
   const cards = [
-    { label: 'Weight',        val: latest.weight, unit: 'kg', d: delta(latest.weight, prev?.weight, false), accent: COLORS.blue },
-    { label: 'Muscle Mass',   val: latest.muscle, unit: 'kg', d: delta(latest.muscle, prev?.muscle, true),  accent: COLORS.teal },
-    { label: 'Body Fat',      val: latest.fat,    unit: 'kg', d: delta(latest.fat,    prev?.fat,    false), accent: COLORS.rose },
-    { label: 'Body Fat',      val: latest.fatPct, unit: '%',  d: delta(latest.fatPct, prev?.fatPct, false), accent: COLORS.amber },
-    { label: 'BMI',           val: latest.bmi,    unit: 'kg/m²', d: delta(latest.bmi, prev?.bmi,    false), accent: COLORS.violet },
-    { label: 'InBody Score',  val: latest.score,  unit: 'pt', d: delta(latest.score,  prev?.score,  true),  accent: COLORS.green },
-    { label: 'BMR',           val: latest.bmr,    unit: 'kcal', d: delta(latest.bmr,  prev?.bmr,    true),  accent: COLORS.teal },
-    { label: 'Visceral Fat',  val: latest.visceral, unit: 'lv', d: delta(latest.visceral, prev?.visceral, false), accent: COLORS.amber },
+    { label:'Weight',          val:l.weight,   unit:'kg',    d:delta(l.weight,   p?.weight,   false), accent:COLORS.blue   },
+    { label:'Muscle Mass',     val:l.muscle,   unit:'kg',    d:delta(l.muscle,   p?.muscle,   true),  accent:COLORS.teal   },
+    { label:'Body Fat',        val:l.fat,      unit:'kg',    d:delta(l.fat,      p?.fat,      false), accent:COLORS.rose   },
+    { label:'Body Fat',        val:l.fatPct,   unit:'%',     d:delta(l.fatPct,   p?.fatPct,   false), accent:COLORS.amber  },
+    // ENHANCEMENT 2 — M:F Ratio replaces plain BMI in the hero cards
+    { label:'M:F Ratio',       val:l.mfRatio,  unit:'×',     d:delta(l.mfRatio,  p?.mfRatio,  true),  accent:COLORS.teal,
+      tip:'Muscle-to-Fat Ratio — more meaningful than BMI for athletic bodies' },
+    { label:'Lean Mass Index', val:l.lmi,      unit:'kg/m²', d:delta(l.lmi,      p?.lmi,      true),  accent:COLORS.violet,
+      tip:l.lmi != null ? `LMI ${l.lmi} · reference ≥10.76 (♂) / ≥6.68 (♀)` : 'Height not found in CSV; LMI unavailable' },
+    { label:'InBody Score',    val:l.score,    unit:'pt',    d:delta(l.score,    p?.score,    true),  accent:COLORS.green  },
+    { label:'Visceral Fat',    val:l.visceral, unit:'lv',    d:delta(l.visceral, p?.visceral, false), accent:COLORS.amber  },
   ];
 
-  const el = document.getElementById('stats-row');
-  el.innerHTML = cards.map(c => `
+  document.getElementById('stats-row').innerHTML = cards.map(c => `
     <div class="stat-card" style="--accent:${c.accent}">
       <div class="stat-label">${c.label}</div>
       <div class="stat-value">${c.val ?? '—'}<span class="stat-unit">${c.unit}</span></div>
-      ${deltaArrow(c.d)}
-    </div>
-  `).join('');
+      ${arrow(c.d)}
+      ${c.tip ? `<div class="stat-tip">${c.tip}</div>` : ''}
+    </div>`).join('');
 }
 
+/* ═══════════════════════════════════════
+   CHARTS
+   ═══════════════════════════════════════ */
 function renderWeightChart(rows) {
   const labels = rows.map(r => fmt(r.date));
-  const ctx = document.getElementById('weightChart').getContext('2d');
-  const c = new Chart(ctx, {
+  const c = new Chart(document.getElementById('weightChart'), {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Weight (kg)',
-          data: rows.map(r => r.weight),
-          borderColor: COLORS.blue,
-          backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.blue, 0.3, 280),
-          tension: 0.4, fill: true, pointRadius: 5,
-          pointBackgroundColor: COLORS.blue, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
-        },
-        {
-          label: 'Fat Mass (kg)',
-          data: rows.map(r => r.fat),
-          borderColor: COLORS.rose,
-          backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.rose, 0.15, 280),
-          tension: 0.4, fill: true, pointRadius: 5,
-          pointBackgroundColor: COLORS.rose, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
-        },
-      ]
-    },
-    options: {
-      ...baseOpts(),
-      plugins: {
-        ...baseOpts().plugins,
-        legend: { display: true, labels: { color: '#9ca3af', boxWidth: 12, boxHeight: 2, usePointStyle: false } }
-      }
-    }
+    data: { labels, datasets: [
+      { label:'Weight (kg)', data:rows.map(r=>r.weight),
+        borderColor:COLORS.blue, backgroundColor:c2=>grad(c2.chart.ctx,COLORS.blue,0.3,260),
+        tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:COLORS.blue, pointBorderColor:'#0a0c10', pointBorderWidth:2 },
+      { label:'Fat Mass (kg)', data:rows.map(r=>r.fat),
+        borderColor:COLORS.rose, backgroundColor:c2=>grad(c2.chart.ctx,COLORS.rose,0.15,260),
+        tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:COLORS.rose, pointBorderColor:'#0a0c10', pointBorderWidth:2 },
+    ]},
+    options: { ...base(), plugins:{ ...base().plugins, legend:{ display:true, labels:{ color:'#9ca3af', boxWidth:12, boxHeight:2 } } } }
   });
   activeCharts.push(c);
 }
 
 function renderMuscleChart(rows) {
   const labels = rows.map(r => fmt(r.date));
-  const ctx = document.getElementById('muscleChart').getContext('2d');
-  const c = new Chart(ctx, {
+  const c = new Chart(document.getElementById('muscleChart'), {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Skeletal Muscle (kg)',
-          data: rows.map(r => r.muscle),
-          backgroundColor: `rgba(${hexToRgb(COLORS.teal)}, 0.7)`,
-          borderColor: COLORS.teal, borderWidth: 1.5, borderRadius: 6,
-        },
-        {
-          label: 'Body Fat (kg)',
-          data: rows.map(r => r.fat),
-          backgroundColor: `rgba(${hexToRgb(COLORS.rose)}, 0.7)`,
-          borderColor: COLORS.rose, borderWidth: 1.5, borderRadius: 6,
-        },
-      ]
-    },
-    options: {
-      ...baseOpts(),
-      plugins: {
-        ...baseOpts().plugins,
-        legend: { display: true, labels: { color: '#9ca3af', boxWidth: 10, boxHeight: 10 } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' } }
-      }
+    data: { labels, datasets: [
+      { label:'Skeletal Muscle', data:rows.map(r=>r.muscle), backgroundColor:`rgba(${hex3(COLORS.teal)},0.75)`, borderColor:COLORS.teal, borderWidth:1, borderRadius:5 },
+      { label:'Body Fat',        data:rows.map(r=>r.fat),    backgroundColor:`rgba(${hex3(COLORS.rose)},0.75)`, borderColor:COLORS.rose, borderWidth:1, borderRadius:5 },
+    ]},
+    options: { ...base(), plugins:{ ...base().plugins, legend:{ display:true, labels:{ color:'#9ca3af', boxWidth:10, boxHeight:10 } } }, scales:{ x:{ grid:{ display:false } }, y:{ grid:{ color:'rgba(255,255,255,0.04)' } } } }
+  });
+  activeCharts.push(c);
+}
+
+/* ENHANCEMENT 2 — Muscle-to-Fat Ratio recomposition chart */
+function renderRatioChart(rows) {
+  const labels = rows.map(r => fmt(r.date));
+  // Background zone plugin
+  const zonePlugin = {
+    id:'refZones',
+    beforeDraw(chart) {
+      const {ctx:c2, scales:{y}, chartArea:{left,right}} = chart;
+      const zone = (yMin, yMax, color) => {
+        const top    = y.getPixelForValue(Math.min(yMax, y.max));
+        const bottom = y.getPixelForValue(Math.max(yMin, y.min));
+        c2.save(); c2.fillStyle = color;
+        c2.fillRect(left, top, right-left, bottom-top);
+        c2.restore();
+      };
+      zone(0,   1.5, 'rgba(251,113,133,0.07)');
+      zone(1.5, 2.2, 'rgba(251,191,36,0.07)');
+      zone(2.2, y.max, 'rgba(74,222,128,0.06)');
+    }
+  };
+  const c = new Chart(document.getElementById('ratioChart'), {
+    type: 'line',
+    plugins: [zonePlugin],
+    data: { labels, datasets: [{
+      label:'M:F Ratio', data:rows.map(r=>r.mfRatio),
+      borderColor:COLORS.teal, backgroundColor:c2=>grad(c2.chart.ctx,COLORS.teal,0.2,220),
+      tension:0.4, fill:true, pointRadius:5,
+      pointBackgroundColor: rows.map(r => !r.mfRatio ? COLORS.muted : r.mfRatio>=2.2 ? COLORS.green : r.mfRatio>=1.5 ? COLORS.amber : COLORS.rose),
+      pointBorderColor:'#0a0c10', pointBorderWidth:2,
+    }]},
+    options: { ...base(),
+      plugins: { ...base().plugins, tooltip:{ ...base().plugins.tooltip, callbacks:{ afterLabel: item => {
+        const v = item.raw; if (!v) return '';
+        return v >= 2.2 ? '✓ Good recomposition range' : v >= 1.5 ? '~ Building — keep training' : '⚠ High fat relative to muscle';
+      }}}},
+      scales: { x:{ grid:{display:false}, ticks:{maxTicksLimit:6} }, y:{ grid:{color:'rgba(255,255,255,0.04)'}, min:0 } }
     }
   });
   activeCharts.push(c);
 }
 
 function renderScoreChart(rows) {
-  const labels = rows.map(r => fmt(r.date));
-  const ctx = document.getElementById('scoreChart').getContext('2d');
-  const c = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'InBody Score',
-        data: rows.map(r => r.score),
-        borderColor: COLORS.green,
-        backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.green, 0.25, 220),
-        tension: 0.4, fill: true, pointRadius: 6,
-        pointBackgroundColor: COLORS.green, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
-      }]
-    },
-    options: { ...baseOpts(), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, min: 60, max: 100 } } }
+  const c = new Chart(document.getElementById('scoreChart'), {
+    type:'line',
+    data:{ labels:rows.map(r=>fmt(r.date)), datasets:[{
+      label:'InBody Score', data:rows.map(r=>r.score),
+      borderColor:COLORS.green, backgroundColor:c2=>grad(c2.chart.ctx,COLORS.green,0.25,220),
+      tension:0.4, fill:true, pointRadius:6, pointBackgroundColor:COLORS.green, pointBorderColor:'#0a0c10', pointBorderWidth:2
+    }]},
+    options:{ ...base(), scales:{ ...base().scales, y:{ ...base().scales.y, min:60, max:100 } } }
   });
   activeCharts.push(c);
 }
 
 function renderBmrChart(rows) {
-  const labels = rows.map(r => fmt(r.date));
-  const ctx = document.getElementById('bmrChart').getContext('2d');
-  const c = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'BMR (kcal)',
-        data: rows.map(r => r.bmr),
-        borderColor: COLORS.violet,
-        backgroundColor: (ctx2) => gradientFromHex(ctx2.chart.ctx, COLORS.violet, 0.25, 220),
-        tension: 0.4, fill: true, pointRadius: 5,
-        pointBackgroundColor: COLORS.violet, pointBorderColor: '#0a0c10', pointBorderWidth: 2,
-      }]
-    },
-    options: baseOpts()
+  const c = new Chart(document.getElementById('bmrChart'), {
+    type:'line',
+    data:{ labels:rows.map(r=>fmt(r.date)), datasets:[{
+      label:'BMR (kcal)', data:rows.map(r=>r.bmr),
+      borderColor:COLORS.violet, backgroundColor:c2=>grad(c2.chart.ctx,COLORS.violet,0.25,220),
+      tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:COLORS.violet, pointBorderColor:'#0a0c10', pointBorderWidth:2
+    }]},
+    options:base()
   });
   activeCharts.push(c);
 }
 
 function renderVisceralChart(rows) {
-  const labels = rows.map(r => fmt(r.date));
-  const ctx = document.getElementById('visceralChart').getContext('2d');
-  const c = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Visceral Fat Level',
-        data: rows.map(r => r.visceral),
-        backgroundColor: rows.map(r => {
-          const v = r.visceral;
-          if (v == null) return COLORS.muted;
-          if (v <= 4)  return `rgba(${hexToRgb(COLORS.green)}, 0.8)`;
-          if (v <= 7)  return `rgba(${hexToRgb(COLORS.amber)}, 0.8)`;
-          return `rgba(${hexToRgb(COLORS.rose)}, 0.8)`;
-        }),
-        borderRadius: 6, borderWidth: 0,
-      }]
-    },
-    options: {
-      ...baseOpts(),
-      scales: {
-        x: { grid: { display: false } },
-        y: { grid: { color: 'rgba(255,255,255,0.04)' }, min: 0, max: 12, ticks: { stepSize: 2 } }
-      }
-    }
+  const c = new Chart(document.getElementById('visceralChart'), {
+    type:'bar',
+    data:{ labels:rows.map(r=>fmt(r.date)), datasets:[{
+      label:'Visceral Fat Level', data:rows.map(r=>r.visceral),
+      backgroundColor: rows.map(r => {
+        const v=r.visceral; if(v==null) return COLORS.muted;
+        return v<=4?`rgba(${hex3(COLORS.green)},0.8)`:v<=7?`rgba(${hex3(COLORS.amber)},0.8)`:`rgba(${hex3(COLORS.rose)},0.8)`;
+      }),
+      borderRadius:6, borderWidth:0
+    }]},
+    options:{ ...base(), scales:{ x:{grid:{display:false}}, y:{grid:{color:'rgba(255,255,255,0.04)'},min:0,max:12,ticks:{stepSize:2}} } }
   });
   activeCharts.push(c);
 }
@@ -693,56 +758,102 @@ function renderVisceralChart(rows) {
 function renderCompBar(row) {
   const w = row.weight;
   if (!w || !row.muscle || !row.fat) return;
-  const softLean = Math.max(0, (w - row.fat - row.muscle));
-  const water = row.water ?? 0;
-  const segments = [
-    { label: 'Skeletal Muscle', val: row.muscle, color: COLORS.teal },
-    { label: 'Other Lean',      val: softLean,   color: COLORS.blue },
-    { label: 'Body Fat',        val: row.fat,     color: COLORS.rose },
+  const lean = Math.max(0, w - row.fat - row.muscle);
+  const segs = [
+    {label:'Skeletal Muscle', val:row.muscle, color:COLORS.teal},
+    {label:'Other Lean',      val:lean,        color:COLORS.blue},
+    {label:'Body Fat',        val:row.fat,     color:COLORS.rose},
   ];
-  const html = `
+  document.getElementById('comp-bar-wrap').innerHTML = `
     <div style="margin-bottom:0.5rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--muted)">
-      Total: <strong style="color:var(--text)">${w} kg</strong>
-    </div>
-    <div class="comp-bar">
-      ${segments.map(s => `<div class="comp-seg" style="width:${(s.val/w*100).toFixed(1)}%;background:${s.color}"></div>`).join('')}
-    </div>
-    <div class="comp-legend">
-      ${segments.map(s => `
-        <div class="comp-legend-item">
-          <span class="comp-dot" style="background:${s.color}"></span>
-          ${s.label} — <strong style="color:var(--text)">${s.val.toFixed(1)} kg</strong>
-          <span>(${(s.val/w*100).toFixed(1)}%)</span>
-        </div>
-      `).join('')}
-    </div>
-  `;
-  document.getElementById('comp-bar-wrap').innerHTML = html;
+      Total: <strong style="color:var(--text)">${w} kg</strong></div>
+    <div class="comp-bar">${segs.map(s=>`<div class="comp-seg" style="width:${(s.val/w*100).toFixed(1)}%;background:${s.color}"></div>`).join('')}</div>
+    <div class="comp-legend">${segs.map(s=>`
+      <div class="comp-legend-item">
+        <span class="comp-dot" style="background:${s.color}"></span>
+        ${s.label} — <strong style="color:var(--text)">${s.val.toFixed(1)} kg</strong>
+        <span>(${(s.val/w*100).toFixed(1)}%)</span>
+      </div>`).join('')}
+    </div>`;
 }
 
+/* ═══════════════════════════════════════
+   ENHANCEMENT 3 — TDEE CALCULATOR
+   Turns BMR into actionable calorie targets
+   ═══════════════════════════════════════ */
+const ACTIVITIES = [
+  { id:'sedentary', name:'Sedentary',      desc:'Desk job, little exercise',      factor:1.2   },
+  { id:'light',     name:'Light',          desc:'1–3 days/week light exercise',   factor:1.375 },
+  { id:'moderate',  name:'Moderate',       desc:'3–5 days/week training',         factor:1.55  },
+  { id:'active',    name:'Very Active',    desc:'Hard training 6–7 days/week',    factor:1.725 },
+  { id:'extra',     name:'Extra Active',   desc:'Physical job + daily training',  factor:1.9   },
+];
+let _bmr = null;
+let _actId = 'moderate';
+
+function renderTDEE(bmr) {
+  _bmr = bmr;
+  document.getElementById('tdee-levels').innerHTML = ACTIVITIES.map(a => `
+    <div class="tdee-level-btn ${a.id===_actId?'active':''}" data-id="${a.id}" onclick="selectAct('${a.id}')">
+      <span class="tdee-level-name">${a.name}</span>
+      <span class="tdee-level-desc">${a.desc} · ×${a.factor}</span>
+    </div>`).join('');
+  calcTDEE();
+}
+
+function selectAct(id) {
+  _actId = id;
+  document.querySelectorAll('.tdee-level-btn').forEach(el => el.classList.toggle('active', el.dataset.id === id));
+  calcTDEE();
+}
+
+function calcTDEE() {
+  if (!_bmr) { document.getElementById('tdee-val').textContent='—'; return; }
+  const act  = ACTIVITIES.find(a => a.id === _actId);
+  const tdee = Math.round(_bmr * act.factor);
+  const cut  = Math.round(tdee - 500);
+  const bulk = Math.round(tdee + 300);
+  document.getElementById('tdee-val').textContent = tdee.toLocaleString();
+  document.getElementById('tdee-breakdown').innerHTML = `
+    <div class="tdee-breakdown-row"><span>BMR (at rest)</span><span>${_bmr.toLocaleString()} kcal</span></div>
+    <div class="tdee-breakdown-row"><span>Activity ×</span><span>${act.factor}</span></div>
+    <div style="border-top:1px solid var(--border);margin:0.35rem 0"></div>
+    <div class="tdee-breakdown-row"><span>Cut target (−500)</span><span style="color:var(--rose)">${cut.toLocaleString()}</span></div>
+    <div class="tdee-breakdown-row"><span>Maintenance</span><span style="color:var(--amber)">${tdee.toLocaleString()}</span></div>
+    <div class="tdee-breakdown-row"><span>Lean bulk (+300)</span><span style="color:var(--green)">${bulk.toLocaleString()}</span></div>`;
+}
+
+/* ═══════════════════════════════════════
+   TABLE — adds M:F Ratio + LMI columns
+   ═══════════════════════════════════════ */
 function renderTable(rows) {
-  const tbody = document.getElementById('table-body');
-  tbody.innerHTML = [...rows].reverse().map(r => {
-    const scoreColor = r.score >= 80 ? COLORS.green : r.score >= 70 ? COLORS.amber : COLORS.rose;
+  document.getElementById('table-body').innerHTML = [...rows].reverse().map(r => {
+    const sc = r.score>=80?COLORS.green:r.score>=70?COLORS.amber:COLORS.rose;
+    const vc = r.visceral==null?COLORS.muted:r.visceral<=4?COLORS.green:r.visceral<=7?COLORS.amber:COLORS.rose;
     return `<tr>
       <td>${fmt(r.date)}</td>
-      <td>${r.weight ?? '—'}</td>
-      <td>${r.muscle ?? '—'}</td>
-      <td>${r.fat ?? '—'}</td>
-      <td>${r.fatPct != null ? r.fatPct + '%' : '—'}</td>
-      <td>${r.bmi ?? '—'}</td>
-      <td>${r.bmr ?? '—'}</td>
-      <td><span class="badge" style="background:rgba(${hexToRgb(scoreColor)},0.15);color:${scoreColor}">${r.score ?? '—'}</span></td>
-      <td>${r.visceral ?? '—'}</td>
-      <td>${r.whr ?? '—'}</td>
+      <td>${r.weight??'—'}</td>
+      <td>${r.muscle??'—'}</td>
+      <td>${r.fat??'—'}</td>
+      <td>${r.fatPct!=null?r.fatPct+'%':'—'}</td>
+      <td>${r.mfRatio!=null?r.mfRatio+'×':'—'}</td>
+      <td>${r.lmi!=null?r.lmi:'<span class="dim">n/a</span>'}</td>
+      <td>${r.bmi??'—'}</td>
+      <td>${r.bmr??'—'}</td>
+      <td><span class="badge" style="background:rgba(${hex3(sc)},0.15);color:${sc}">${r.score??'—'}</span></td>
+      <td><span class="badge" style="background:rgba(${hex3(vc)},0.12);color:${vc}">${r.visceral??'—'}</span></td>
+      <td>${r.whr??'—'}</td>
     </tr>`;
   }).join('');
 }
 
+/* ═══════════════════════════════════════
+   ORCHESTRATION
+   ═══════════════════════════════════════ */
 function renderDashboard(rows) {
-  // Destroy old charts
   activeCharts.forEach(c => c.destroy());
   activeCharts.length = 0;
+  _heightM = null;
 
   document.getElementById('upload-section').style.display  = 'none';
   document.getElementById('dashboard-section').style.display = 'block';
@@ -750,10 +861,12 @@ function renderDashboard(rows) {
   renderStats(rows);
   renderWeightChart(rows);
   renderMuscleChart(rows);
+  renderRatioChart(rows);
   renderScoreChart(rows);
   renderBmrChart(rows);
   renderVisceralChart(rows);
-  renderCompBar(rows[rows.length - 1]);
+  renderCompBar(rows[rows.length-1]);
+  renderTDEE(rows[rows.length-1].bmr);
   renderTable(rows);
 }
 
@@ -766,38 +879,25 @@ function resetDashboard() {
 }
 
 function handleFile(file) {
-  if (!file || !file.name.endsWith('.csv')) {
-    alert('Please select a valid .csv file.');
-    return;
-  }
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.csv')) { alert('Please select a .csv file.'); return; }
   const reader = new FileReader();
   reader.onload = e => {
     try {
       const rows = processCSV(e.target.result);
-      if (rows.length === 0) { alert('No valid data rows found.'); return; }
+      if (!rows.length) { alert('No valid data rows found.'); return; }
       renderDashboard(rows);
-    } catch(err) {
-      alert('Error parsing CSV: ' + err.message);
-    }
+    } catch(err) { alert('Error: ' + err.message); console.error(err); }
   };
   reader.readAsText(file);
 }
 
-// File input
 document.getElementById('file-input').addEventListener('change', e => handleFile(e.target.files[0]));
-
-// Drag & drop
 const zone = document.getElementById('drop-zone');
-zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
 zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-zone.addEventListener('drop', e => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  handleFile(e.dataTransfer.files[0]);
-});
-zone.addEventListener('click', e => {
-  if (e.target.tagName !== 'BUTTON') document.getElementById('file-input').click();
-});
+zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
+zone.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') document.getElementById('file-input').click(); });
 </script>
 </body>
 </html>
